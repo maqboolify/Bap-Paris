@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import emailjs from "@emailjs/browser";
+
+// ─── EMAILJS CONFIG ──────────────────────────────────────────────────────────
+// 🔑 Paste your own EmailJS credentials here:
+const EMAILJS_SERVICE_ID  = "service_t9wyhci";   // e.g. "service_xxxxxxx"
+const EMAILJS_TEMPLATE_ID = "template_9gj0dhs";  // e.g. "template_xxxxxxx"
+const EMAILJS_PUBLIC_KEY  = "09iZyP_yUrwHYvgmS";   // e.g. "AbCdEfGhIjKlMnOp"
 
 // ─── ALL MODELS PER BRAND ────────────────────────────────────────────────────
 const BRAND_MODELS = {
@@ -117,8 +124,8 @@ const SERVICES = [
 
 const HOURS = [
   { day: "Lun – Ven", time: "08h00 – 18h00", closed: false },
-  { day: "Samedi", time: "09h00 – 13h00", closed: false },
-  { day: "Dimanche", time: "Fermé", closed: true },
+  { day: "Samedi",    time: "09h00 – 13h00", closed: false },
+  { day: "Dimanche",  time: "Fermé",          closed: true  },
 ];
 
 const INFO_CARDS = [
@@ -181,31 +188,45 @@ const SocialLinks = [
   },
 ];
 
-// Animation variants
+// ─── Confetti hook ────────────────────────────────────────────────────────────
+function useConfetti() {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (window.confetti) { ref.current = window.confetti; return; }
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js";
+    s.onload = () => { ref.current = window.confetti; };
+    document.head.appendChild(s);
+  }, []);
+  return useCallback((ox, oy) => {
+    const fn = ref.current; if (!fn) return;
+    const colors = ["#db0000", "#ff4444", "#ffffff", "#ff8888", "#111111"];
+    fn({ particleCount: 80, spread: 70, origin: { x: ox, y: oy }, colors, startVelocity: 45, ticks: 140, zIndex: 9999 });
+    fn({ particleCount: 35, angle: 60,  spread: 60, startVelocity: 65, origin: { x: 0,   y: 0.65 }, colors });
+    fn({ particleCount: 35, angle: 120, spread: 60, startVelocity: 65, origin: { x: 1,   y: 0.65 }, colors });
+  }, []);
+}
+
+// ─── Animation variants ───────────────────────────────────────────────────────
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
+    opacity: 1, y: 0,
     transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
   }),
 };
-
 const staggerContainer = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.09 } },
 };
 
+// ─── Sub-components ───────────────────────────────────────────────────────────
 function StyledSelect({ id, name, value, onChange, children, required, disabled }) {
   return (
     <div className="relative">
       <select
-        id={id}
-        name={name}
-        value={value}
-        onChange={onChange}
-        required={required}
-        disabled={disabled}
+        id={id} name={name} value={value} onChange={onChange}
+        required={required} disabled={disabled}
         className="w-full appearance-none bg-white border border-gray-200 px-4 py-3 text-sm text-gray-900 font-medium outline-none focus:border-red-600 focus:shadow-[3px_3px_0_rgba(219,0,0,0.12)] transition-all cursor-pointer pr-10 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
         style={{ fontFamily: "'Bai Jamjuree', sans-serif" }}
       >
@@ -223,13 +244,8 @@ function StyledSelect({ id, name, value, onChange, children, required, disabled 
 function InputField({ id, name, type = "text", placeholder, value, onChange, required }) {
   return (
     <input
-      id={id}
-      name={name}
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      required={required}
+      id={id} name={name} type={type} placeholder={placeholder}
+      value={value} onChange={onChange} required={required}
       className="w-full bg-white border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none focus:border-red-600 focus:shadow-[3px_3px_0_rgba(219,0,0,0.12)] transition-all placeholder:text-gray-400"
       style={{ fontFamily: "'Bai Jamjuree', sans-serif" }}
     />
@@ -239,15 +255,12 @@ function InputField({ id, name, type = "text", placeholder, value, onChange, req
 function SectionLabel({ children }) {
   return (
     <div className="flex items-center gap-3 mb-6">
-      <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-red-600 whitespace-nowrap">
-        {children}
-      </span>
+      <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-red-600 whitespace-nowrap">{children}</span>
       <div className="flex-1 h-px bg-gray-200" />
     </div>
   );
 }
 
-// ─── Pre-fill badge shown when brand/model arrive from CarsPage ──────────────
 function PrefilledBadge({ brand, model }) {
   if (!brand) return null;
   return (
@@ -262,55 +275,194 @@ function PrefilledBadge({ brand, model }) {
         <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
       </svg>
       <p className="text-sm text-red-700 font-semibold">
-        Véhicule pré-sélectionné&nbsp;:&nbsp;
+        Véhicule pré-sélectionné :&nbsp;
         <span className="font-extrabold">{brand}{model ? ` — ${model}` : ""}</span>
       </p>
     </motion.div>
   );
 }
 
+// ─── Success Overlay (full-screen celebration popup) ─────────────────────────
+function SuccessOverlay({ onClose }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="fixed inset-0 z-[9998] flex items-center justify-center px-6"
+      style={{ background: "rgba(0,0,0,0.72)", backdropFilter: "blur(8px)" }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.78, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.88, y: 20 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative bg-white max-w-md w-full p-10 text-center"
+        style={{ fontFamily: "'Bai Jamjuree', sans-serif" }}
+      >
+        {/* Red top bar */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-red-600" />
+
+        {/* Animated checkmark circle */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.5, type: "spring", stiffness: 260, damping: 18 }}
+          className="mx-auto mb-6 w-20 h-20 rounded-full bg-red-600 flex items-center justify-center"
+        >
+          <motion.svg
+            width="34" height="34" viewBox="0 0 24 24" fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+          >
+            <motion.path
+              d="M4 12.5L9 17.5L20 7"
+              stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+            />
+          </motion.svg>
+        </motion.div>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="text-[26px] font-extrabold text-[#111] tracking-[-0.03em] mb-2"
+        >
+          Message envoyé !
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+          className="text-sm text-gray-500 mb-1 leading-[1.7]"
+        >
+          Merci pour votre demande. Notre équipe vous répondra dans les plus brefs délais.
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.55 }}
+          className="text-xs text-gray-400 mb-8"
+        >
+          Réponse garantie sous 24h ouvrées.
+        </motion.p>
+
+        {/* Stats row */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="flex items-stretch justify-center gap-0 mb-8 border border-gray-200"
+        >
+          {[
+            { num: "24h",   label: "Temps de réponse" },
+            { num: "100%",  label: "Satisfaction client" },
+            { num: "10+",   label: "Ans d'expérience" },
+          ].map(({ num, label }, i) => (
+            <div key={i} className={`flex-1 py-4 px-2 text-center ${i < 2 ? "border-r border-gray-200" : ""}`}>
+              <p className="text-[18px] font-extrabold text-red-600 tracking-tight leading-none mb-1">{num}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-400">{label}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.button
+          onClick={onClose}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="w-full py-3.5 bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-red-700 border-none cursor-pointer"
+          style={{ fontFamily: "'Bai Jamjuree', sans-serif" }}
+        >
+          Fermer
+        </motion.button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── MAIN ─────────────────────────────────────────────────────────────────────
 export default function BAPContactPage() {
-  // ── Read URL params ?brand=Audi&model=A3 passed from CarsPage ──────────────
   const params = new URLSearchParams(
     typeof window !== "undefined" ? window.location.search : ""
   );
   const prefilledBrand = params.get("brand") || "";
   const prefilledModel = params.get("model") || "";
 
-  const [form, setForm] = useState({
+  const EMPTY = {
     nom: "", prenom: "", email: "", tel: "",
-    immat: "",
-    marque: prefilledBrand,
-    modele: prefilledModel,
+    immat: "", marque: prefilledBrand, modele: prefilledModel,
     service: "", message: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  };
 
-  // Keep model list reactive to brand changes
+  const [form, setForm]         = useState(EMPTY);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
+
   const availableModels = BRAND_MODELS[form.marque] || [];
+  const submitBtnRef    = useRef(null);
+  const fireConfetti    = useConfetti();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "marque") {
-      // Reset model when brand changes
       setForm((prev) => ({ ...prev, marque: value, modele: "" }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    setError("");
+
+    try {
+      // Send via EmailJS
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          nom:          form.nom,
+          prenom:       form.prenom,
+          fullName:     `${form.prenom} ${form.nom}`,
+          email:        form.email,
+          tel:          form.tel || "Non renseigné",
+          immat:        form.immat,
+          marque:       form.marque,
+          modele:       form.modele || "Non précisé",
+          service:      form.service || "Non précisé",
+          message:      form.message,
+          submittedAt:  new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+
+      // Fire confetti from submit button position
+      if (submitBtnRef.current) {
+        const r = submitBtnRef.current.getBoundingClientRect();
+        fireConfetti(
+          (r.left + r.width / 2) / window.innerWidth,
+          (r.top  + r.height / 2) / window.innerHeight
+        );
+      }
+
+      setShowSuccess(true);
+      setForm(EMPTY);
+    } catch (err) {
+      console.error("EmailJS error:", err);
+      setError("Une erreur est survenue. Veuillez réessayer ou nous appeler directement.");
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-      setForm({
-        nom: "", prenom: "", email: "", tel: "",
-        immat: "", marque: "", modele: "", service: "", message: "",
-      });
-    }, 1200);
+    }
   };
 
   return (
@@ -320,8 +472,8 @@ export default function BAPContactPage() {
         * { font-family: 'Bai Jamjuree', sans-serif; }
         .info-card-hover { transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
         .info-card-hover:hover { border-color: #db0000; box-shadow: 4px 4px 0 #db0000; transform: translate(-2px,-2px); }
-        .btn-submit-hover:hover { background: #a80000 !important; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(219,0,0,0.3); }
-        .btn-submit-hover:active { transform: translateY(0); }
+        .btn-submit-hover:hover:not(:disabled) { background: #a80000 !important; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(219,0,0,0.3); }
+        .btn-submit-hover:active:not(:disabled) { transform: translateY(0); }
         .nav-link-active { color: #db0000; border-bottom: 2px solid #db0000; }
         .nav-link:hover { color: #db0000; }
         .topbar-link:hover { color: #fff; }
@@ -336,9 +488,16 @@ export default function BAPContactPage() {
         @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:200% center} }
         .model-badge { animation: badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards; }
         @keyframes badgePop { 0%{transform:scale(0.85);opacity:0} 100%{transform:scale(1);opacity:1} }
+        .error-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%,90%{transform:translateX(-2px)} 20%,80%{transform:translateX(3px)} 30%,50%,70%{transform:translateX(-4px)} 40%,60%{transform:translateX(4px)} }
       `}</style>
 
-      {/* HERO */}
+      {/* ── Success overlay ── */}
+      <AnimatePresence>
+        {showSuccess && <SuccessOverlay onClose={() => setShowSuccess(false)} />}
+      </AnimatePresence>
+
+      {/* ── HERO ── */}
       <div className="bg-[#111] px-10 pt-14 pb-12 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-[3px] bg-red-600" />
         <div className="hero-glow absolute inset-0 pointer-events-none" />
@@ -352,9 +511,7 @@ export default function BAPContactPage() {
         </motion.div>
         <div className="max-w-[1400px] mx-auto">
           <motion.nav
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
             className="flex items-center gap-2 mb-5"
           >
             <a href="/" className="text-white/40 text-xs tracking-[0.06em] no-underline uppercase hover:text-white/70 transition-colors">Accueil</a>
@@ -362,8 +519,7 @@ export default function BAPContactPage() {
             <span className="text-red-600 text-xs tracking-[0.06em] uppercase font-bold">Contact</span>
           </motion.nav>
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
             className="text-[clamp(32px,5vw,56px)] font-extrabold text-white tracking-[-0.03em] leading-[1.05]"
           >
@@ -371,22 +527,15 @@ export default function BAPContactPage() {
             <span className="text-red-600">boîte automatique</span>
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-3.5 text-[15px] text-white/45 max-w-[480px] font-normal"
           >
             Notre équipe est disponible pour répondre à toutes vos questions et vous accompagner dans votre projet.
           </motion.p>
-
-          {/* Quick contact pill */}
           <motion.a
             href="tel:+33664412376"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.4 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.4 }}
+            whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             className="mt-8 inline-flex items-center gap-3 bg-white/[0.06] border border-white/10 px-5 py-3 no-underline group"
           >
             <span className="w-8 h-8 bg-red-600 flex items-center justify-center flex-shrink-0">
@@ -402,45 +551,34 @@ export default function BAPContactPage() {
         </div>
       </div>
 
-      {/* MAIN CONTACT SECTION */}
+      {/* ── MAIN SECTION ── */}
       <section>
         <div className="max-w-[1400px] mx-auto px-10 py-20 grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-20 items-start">
 
           {/* LEFT: INFO */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-          >
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
             <SectionLabel>Informations</SectionLabel>
             <motion.div variants={fadeUp} className="mb-10">
               <h2 className="text-[28px] font-extrabold text-[#111] tracking-[-0.02em] leading-[1.15] mb-6">
                 BAP <span className="text-red-600">Paris</span><br />à votre service
               </h2>
             </motion.div>
-
             <div className="flex flex-col gap-3">
               {INFO_CARDS.map((card, i) => (
                 <motion.div
-                  key={card.label}
-                  variants={fadeUp}
-                  custom={i}
+                  key={card.label} variants={fadeUp} custom={i}
                   className="info-card-hover flex items-start gap-4 p-5 border border-gray-200 cursor-default"
                 >
-                  <div className="w-10 h-10 bg-red-600 flex items-center justify-center text-white flex-shrink-0">
-                    {card.icon}
-                  </div>
+                  <div className="w-10 h-10 bg-red-600 flex items-center justify-center text-white flex-shrink-0">{card.icon}</div>
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-gray-500 mb-1">{card.label}</div>
                     {card.href ? (
-                      <a href={card.href} target={card.label === "Adresse" ? "_blank" : undefined} rel="noopener noreferrer" className="text-[15px] font-semibold text-[#111] no-underline block leading-snug hover:text-red-600 transition-colors whitespace-pre-line">
+                      <a href={card.href} target={card.label === "Adresse" ? "_blank" : undefined} rel="noopener noreferrer"
+                        className="text-[15px] font-semibold text-[#111] no-underline block leading-snug hover:text-red-600 transition-colors whitespace-pre-line">
                         {card.value}
                       </a>
                     ) : (
-                      <span className="text-[15px] font-semibold text-[#111] block leading-snug whitespace-pre-line">
-                        {card.value}
-                      </span>
+                      <span className="text-[15px] font-semibold text-[#111] block leading-snug whitespace-pre-line">{card.value}</span>
                     )}
                   </div>
                 </motion.div>
@@ -454,18 +592,12 @@ export default function BAPContactPage() {
                 {HOURS.map((row, i) => (
                   <motion.div
                     key={row.day}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
+                    initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }} transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
                     className={`grid grid-cols-2 ${i < HOURS.length - 1 ? "border-b border-gray-200" : ""}`}
                   >
-                    <div className="px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 border-r border-gray-200">
-                      {row.day}
-                    </div>
-                    <div className={`px-4 py-3 text-sm font-semibold ${row.closed ? "text-red-600" : "text-[#111]"}`}>
-                      {row.time}
-                    </div>
+                    <div className="px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 border-r border-gray-200">{row.day}</div>
+                    <div className={`px-4 py-3 text-sm font-semibold ${row.closed ? "text-red-600" : "text-[#111]"}`}>{row.time}</div>
                   </motion.div>
                 ))}
               </div>
@@ -474,10 +606,8 @@ export default function BAPContactPage() {
 
           {/* RIGHT: FORM */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <SectionLabel>Formulaire de contact</SectionLabel>
             <h2 className="text-[28px] font-extrabold text-[#111] tracking-[-0.02em] leading-[1.15] mb-2">
@@ -487,11 +617,8 @@ export default function BAPContactPage() {
               Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.
             </p>
 
-            {/* Pre-fill badge */}
             <AnimatePresence>
-              {prefilledBrand && (
-                <PrefilledBadge brand={prefilledBrand} model={prefilledModel} />
-              )}
+              {prefilledBrand && <PrefilledBadge brand={prefilledBrand} model={prefilledModel} />}
             </AnimatePresence>
 
             <form onSubmit={handleSubmit}>
@@ -526,57 +653,42 @@ export default function BAPContactPage() {
                   <InputField id="immat" name="immat" placeholder="AB-123-CD" value={form.immat} onChange={handleChange} required />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="marque" className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500">
+                  <label htmlFor="marque" className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500 flex items-center gap-1.5">
                     Marque du véhicule *
                     {form.marque && prefilledBrand === form.marque && (
-                      <span className="model-badge ml-2 inline-flex items-center gap-1 bg-red-100 text-red-600 text-[9px] font-bold uppercase tracking-[0.1em] px-1.5 py-0.5">
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-                        Auto
+                      <span className="model-badge inline-flex items-center gap-1 bg-red-100 text-red-600 text-[9px] font-bold uppercase tracking-[0.1em] px-1.5 py-0.5">
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>Auto
                       </span>
                     )}
                   </label>
                   <StyledSelect id="marque" name="marque" value={form.marque} onChange={handleChange} required>
                     <option value="">Sélectionner...</option>
-                    {CAR_BRANDS.map((b) => (
-                      <option key={b} value={b}>{b}</option>
-                    ))}
+                    {CAR_BRANDS.map((b) => <option key={b} value={b}>{b}</option>)}
                   </StyledSelect>
                 </div>
               </div>
 
-              {/* Row 4: Modèle — NEW */}
+              {/* Row 4: Modèle */}
               <div className="flex flex-col gap-1.5 mb-4">
                 <label htmlFor="modele" className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500 flex items-center gap-2">
                   Modèle du véhicule
                   {form.modele && prefilledModel === form.modele && (
                     <span className="model-badge inline-flex items-center gap-1 bg-red-100 text-red-600 text-[9px] font-bold uppercase tracking-[0.1em] px-1.5 py-0.5">
-                      <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-                      Auto
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>Auto
                     </span>
                   )}
                 </label>
                 <StyledSelect
-                  id="modele"
-                  name="modele"
-                  value={form.modele}
-                  onChange={handleChange}
+                  id="modele" name="modele" value={form.modele} onChange={handleChange}
                   disabled={!form.marque || availableModels.length === 0}
                 >
                   <option value="">
-                    {!form.marque
-                      ? "Sélectionnez d'abord une marque..."
-                      : availableModels.length === 0
-                      ? "Aucun modèle disponible"
-                      : "Sélectionner un modèle..."}
+                    {!form.marque ? "Sélectionnez d'abord une marque..." : availableModels.length === 0 ? "Aucun modèle disponible" : "Sélectionner un modèle..."}
                   </option>
-                  {availableModels.map((m) => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
+                  {availableModels.map((m) => <option key={m} value={m}>{m}</option>)}
                 </StyledSelect>
                 {!form.marque && (
-                  <p className="text-[11px] text-gray-400 mt-0.5 pl-1">
-                    ↑ Choisissez une marque pour voir les modèles disponibles
-                  </p>
+                  <p className="text-[11px] text-gray-400 mt-0.5 pl-1">↑ Choisissez une marque pour voir les modèles disponibles</p>
                 )}
               </div>
 
@@ -585,9 +697,7 @@ export default function BAPContactPage() {
                 <label htmlFor="service" className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500">Type de service</label>
                 <StyledSelect id="service" name="service" value={form.service} onChange={handleChange}>
                   <option value="">Sélectionner...</option>
-                  {SERVICES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
+                  {SERVICES.map((s) => <option key={s} value={s}>{s}</option>)}
                 </StyledSelect>
               </div>
 
@@ -595,35 +705,48 @@ export default function BAPContactPage() {
               <div className="flex flex-col gap-1.5 mb-4">
                 <label htmlFor="message" className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500">Message *</label>
                 <textarea
-                  id="message"
-                  name="message"
+                  id="message" name="message"
                   placeholder="Décrivez votre problème ou votre demande..."
-                  value={form.message}
-                  onChange={handleChange}
-                  required
-                  rows={5}
+                  value={form.message} onChange={handleChange} required rows={5}
                   className="w-full bg-white border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none focus:border-red-600 focus:shadow-[3px_3px_0_rgba(219,0,0,0.12)] transition-all resize-y placeholder:text-gray-400"
                   style={{ fontFamily: "'Bai Jamjuree', sans-serif" }}
                 />
               </div>
 
+              {/* Error */}
+              <AnimatePresence>
+                {error && (
+                  <motion.p
+                    key="error"
+                    initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="error-shake mb-4 px-4 py-3 bg-red-50 border border-red-200 border-l-4 border-l-red-600 text-xs text-red-700 font-semibold leading-relaxed"
+                  >
+                    ⚠ {error}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+
               {/* Submit */}
               <div className="mt-8 flex items-center gap-5 flex-wrap">
                 <motion.button
+                  ref={submitBtnRef}
                   type="submit"
-                  disabled={loading || submitted}
-                  whileHover={!loading && !submitted ? { scale: 1.02 } : {}}
-                  whileTap={!loading && !submitted ? { scale: 0.98 } : {}}
+                  disabled={loading}
+                  whileHover={!loading ? { scale: 1.02 } : {}}
+                  whileTap={!loading ? { scale: 0.98 } : {}}
                   className="btn-submit-hover flex items-center gap-2.5 px-9 h-[52px] text-xs font-bold uppercase tracking-[0.14em] text-white border-none cursor-pointer transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                   style={{
-                    background: submitted ? "#1a7f47" : loading ? "#a80000" : "#db0000",
+                    background: loading ? "#a80000" : "#db0000",
                     fontFamily: "'Bai Jamjuree', sans-serif",
                   }}
                 >
-                  {submitted ? (
-                    <>Message envoyé ✓</>
-                  ) : loading ? (
-                    <>Envoi en cours...</>
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round"/>
+                      </svg>
+                      Envoi en cours...
+                    </>
                   ) : (
                     <>
                       Envoyer le message
@@ -637,62 +760,36 @@ export default function BAPContactPage() {
                   * Champs obligatoires.<br />Réponse sous 24h ouvrées.
                 </p>
               </div>
-
-              {/* Success */}
-              <AnimatePresence>
-                {submitted && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="mt-5 px-6 py-5 bg-[#f0faf5] border border-[#2ecc71] border-l-4 border-l-[#2ecc71]"
-                  >
-                    <p className="text-sm text-[#1a7f47] font-semibold">✓ Message envoyé ! Nous vous répondrons très prochainement.</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </form>
           </motion.div>
         </div>
       </section>
 
-      {/* MAP STRIP */}
+      {/* ── MAP STRIP ── */}
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.8 }}
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.8 }}
         className="bg-gray-100 border-t border-gray-200"
       >
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_340px]">
-          {/* Map */}
           <div className="h-[420px] relative overflow-hidden">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2623.6!2d2.4385!3d48.8815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66d8b3c8a3f1b%3A0x0!2s3%20Rue%20Anatole%20France%2C%2093230%20Romainville%2C%20France!5e0!3m2!1sfr!2sfr!4v1680000000000!5m2!1sfr!2sfr"
               title="BAP Paris — 3 Rue Anatole France, Romainville"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
               className="w-full h-full border-none block"
               style={{ filter: "grayscale(0.2) contrast(1.05)" }}
             />
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-transparent to-gray-100/20" />
           </div>
-
-          {/* Info panel */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
             className="bg-[#111] px-10 py-12 flex flex-col justify-center"
           >
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40 mb-4">Nous trouver</p>
             <h3 className="text-[22px] font-extrabold text-white tracking-[-0.02em] leading-[1.2] mb-5">
               Notre atelier<br /><span className="text-red-600">Romainville</span>
             </h3>
-
             <div className="flex items-start gap-3 mb-3">
               <div className="w-7 h-7 bg-red-600/20 border border-red-600/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="#db0000">
@@ -700,29 +797,20 @@ export default function BAPContactPage() {
                 </svg>
               </div>
               <address className="not-italic text-sm text-white/60 leading-[1.7]">
-                3 Rue Anatole France<br />
-                93230 Romainville<br />
-                France
+                3 Rue Anatole France<br />93230 Romainville<br />France
               </address>
             </div>
-
             <div className="flex items-center gap-3 mb-7">
               <div className="w-7 h-7 bg-red-600/20 border border-red-600/30 flex items-center justify-center flex-shrink-0">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="#db0000">
                   <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
                 </svg>
               </div>
-              <a href="tel:+33664412376" className="text-sm font-bold text-white/80 no-underline hover:text-white transition-colors">
-                +33 6 64 41 23 76
-              </a>
+              <a href="tel:+33664412376" className="text-sm font-bold text-white/80 no-underline hover:text-white transition-colors">+33 6 64 41 23 76</a>
             </div>
-
             <motion.a
-              href="https://maps.app.goo.gl/bjqKVS9KWkoAhp649"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              href="https://maps.app.goo.gl/bjqKVS9KWkoAhp649" target="_blank" rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               className="btn-directions inline-flex items-center gap-2.5 bg-red-600 text-white no-underline text-[11px] font-bold uppercase tracking-[0.14em] px-[22px] py-[13px] w-fit"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -734,7 +822,7 @@ export default function BAPContactPage() {
         </div>
       </motion.div>
 
-      {/* FOOTER */}
+      {/* ── FOOTER ── */}
       <footer className="bg-[#111] border-t border-white/[0.06] px-10 py-10">
         <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-6">
           <div className="flex flex-col leading-none">
@@ -751,9 +839,7 @@ export default function BAPContactPage() {
           </div>
           <div className="flex items-center gap-4">
             {SocialLinks.map((s) => (
-              <a key={s.label} href="#" aria-label={s.label} className="footer-social text-white/35 transition-colors duration-200">
-                {s.icon}
-              </a>
+              <a key={s.label} href="#" aria-label={s.label} className="footer-social text-white/35 transition-colors duration-200">{s.icon}</a>
             ))}
           </div>
         </div>

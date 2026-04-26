@@ -114,6 +114,8 @@ const navLinks = [
       {
         title: "Composants",
         items: [
+          
+          { label: "Boîtes manuelles", href: "/pieces/manuelles" },
           { label: "Boîtes automatiques", href: "/pieces/boites" },
           { label: "Calculateurs", href: "/pieces/calculateurs" },
           { label: "Mécatroniques", href: "/pieces/mecatroniques" },
@@ -262,7 +264,7 @@ function MegaMenu({ columns }) {
                 <li key={item.label}>
                   <a
                     href={item.href}
-                    className="text-[13px] text-[#444] hover:text-[#db0000] hover:pl-1 transition-all duration-150 flex items-center gap-2 group"
+                    className="text-[16px] font-medium text-[#444] hover:text-[#db0000] hover:pl-1 transition-all duration-150 flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-3 overflow-hidden transition-all duration-150 text-[#db0000]">
                       <ChevronRightIcon />
@@ -307,7 +309,7 @@ function NavItem({ link, isSticky }) {
     >
       <a
         href={link.href}
-        className={`relative flex items-center gap-1.5 h-full px-4 xl:px-5 text-[13px] font-bold uppercase tracking-[0.08em] transition-colors duration-200
+        className={`relative flex items-center gap-1.5 h-full px-4 xl:px-5 text-[16px] font-[800] uppercase tracking-[0.12em] transition-colors duration-200
           ${isSticky ? "text-[#222]" : "text-[#222]"}
           hover:text-[#db0000]
           after:content-[''] after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-[#db0000] after:scale-x-0 after:transition-transform after:duration-200 hover:after:scale-x-100 after:origin-left
@@ -675,7 +677,7 @@ export default function Navbar() {
           isSticky ? "fixed top-0 shadow-[0_2px_20px_rgba(0,0,0,0.10)]" : "relative"
         }`}
       >
-        <div className="bg-white h-[75px] md:h-[90px]">
+        <div className="bg-white h-[120px] md:h-[120px]">
           <div className="max-w-[1400px] mx-auto px-5 xl:px-10 h-full flex items-center justify-between gap-4">
 
             {/* LEFT: Burger (mobile) + Logo */}
@@ -687,16 +689,20 @@ export default function Navbar() {
               >
                 <MenuIcon />
               </button>
-              <a href="/" className="flex items-center gap-2 shrink-0">
-                <div className="flex flex-col leading-none">
-                  <span className="text-[22px] md:text-[26px] font-black tracking-[-0.04em] text-[#111] uppercase">
-                    BAP
-                  </span>
-                  <span className="text-[9px] font-bold tracking-[0.28em] text-[#db0000] uppercase -mt-1">
-                    PARIS
-                  </span>
-                </div>
-              </a>
+              <a href="/" className="flex items-center shrink-0 -my-4">
+  <img
+    src="/images/logo.png"
+    alt="BAP Paris Auto Garage"
+    className="h-[110px] md:h-[150px] w-auto object-contain mix-blend-multiply"
+  />
+</a>
+              {/* <a href="/" className="flex items-center shrink-0 -my-3">
+  <img
+    src="/images/logo.png"
+    alt="BAP Paris Auto Garage"
+    className="h-[90px] md:h-[120px] w-auto object-contain mix-blend-multiply"
+  />
+</a> */}
             </div>
 
             {/* CENTER: Desktop nav */}
@@ -721,7 +727,7 @@ export default function Navbar() {
                 className="relative hidden md:flex w-[42px] h-[42px] items-center justify-center text-white hover:text-[#db0000] transition-colors duration-200"
                 aria-label="Favoris"
               >
-                <HeartIcon />
+                {/* <HeartIcon />
                 <span className="absolute top-1 right-1 bg-[#db0000] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none">
                   0
                 </span>
@@ -735,7 +741,7 @@ export default function Navbar() {
                 <span className="hidden md:block text-[11px] font-bold uppercase tracking-wider">Panier</span>
                 <span className="absolute -top-1.5 -right-1.5 bg-[#db0000] group-hover:bg-white group-hover:text-[#db0000] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none transition-colors duration-200">
                   0
-                </span>
+                </span> */}
               </button>
             </div>
           </div>

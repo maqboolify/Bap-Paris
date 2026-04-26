@@ -7,7 +7,7 @@ const mechatronics = [
     description: "DSG7 mechatronics (DQ200) for Audi, Volkswagen, Skoda.",
     longDescription:
       "The DSG7 (DQ200) is a 7-speed dual-clutch mechatronics unit used in Audi, Volkswagen, and Skoda vehicles. It manages clutch actuation and gear selection electronically for smooth, rapid shifts.",
-    price: 700,
+    
     inStock: true,
     image: "/images/dqg6Meca.webp",
   },
@@ -17,7 +17,7 @@ const mechatronics = [
     description: "Complete DSG 7 mechatronics (DQ381) recent vehicle.",
     longDescription:
       "The DSG7 (DQ381) is the latest-generation 7-speed dual-clutch mechatronics unit for recent VAG group vehicles. It offers improved thermal management and enhanced shift precision.",
-    price: 700,
+    
     inStock: true,
     image: "/images/dq381.webp",
   },
@@ -27,7 +27,7 @@ const mechatronics = [
     description: "Complete mechatronics unit for ZF 8HP45 and 8HP70 gearboxes.",
     longDescription:
       "The 6HP mechatronics unit is compatible with ZF 8HP45 and 8HP70 automatic gearboxes. It controls hydraulic and electronic functions for precise gear management across a wide range of vehicles.",
-    price: 700,
+    
     inStock: true,
     image: "/images/6hp.webp",
   },
@@ -37,7 +37,7 @@ const mechatronics = [
     description: "Complete mechatronics unit for ZF 8HP45/70 gearbox.",
     longDescription:
       "The 8HP mechatronics unit is designed for the ZF 8HP45/70 8-speed automatic gearbox platform, found in BMW, Audi, Chrysler, Jeep and more. Ensures reliable hydraulic and electronic control.",
-    price: 700,
+    
     inStock: true,
     image: "/images/8hp.webp",
   },
@@ -106,7 +106,7 @@ function Modal({ product, onClose }) {
         </p>
 
         <p className="text-center text-2xl font-bold text-blue-600 mb-6">
-          € {product.price.toLocaleString("fr-FR")}
+          {/* € {product.price.toLocaleString("fr-FR")} */}
         </p>
 
         <div className="flex justify-center">
@@ -162,7 +162,7 @@ function MechatronicsCard({ product, onOpen }) {
         </p>
 
         <p className="text-base font-bold text-blue-600 mb-4">
-          Price: € {product.price.toLocaleString("fr-FR")}
+          {/* Price: € {product.price.toLocaleString("fr-FR")} */}
         </p>
 
         <div>

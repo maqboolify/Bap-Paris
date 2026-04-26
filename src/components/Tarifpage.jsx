@@ -191,6 +191,80 @@ function TierCard({ tier, delay }) {
   );
 }
 
+// ─── Oil change service card ──────────────────────────────────────────────────
+function OilServiceCard({ service, delay }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <InView custom={delay}>
+      <motion.div
+        onHoverStart={() => setHovered(true)}
+        onHoverEnd={() => setHovered(false)}
+        animate={{ y: hovered ? -4 : 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="relative rounded-2xl border p-6 flex flex-col h-full"
+        style={{
+          background: service.highlight ? "linear-gradient(145deg, rgba(219,0,0,0.07), rgba(219,0,0,0.01))" : "#f9f9f9",
+          borderColor: service.highlight ? "rgba(219,0,0,0.5)" : "#e5e5e5",
+        }}
+      >
+        {service.highlight && (
+          <div
+            className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+            style={{ background: "linear-gradient(to right, #db0000, #ff4444, #db0000)" }}
+          />
+        )}
+
+        {/* Icon */}
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+          style={{ background: service.highlight ? "rgba(219,0,0,0.12)" : "#efefef" }}
+        >
+          {service.icon}
+        </div>
+
+        <h3
+          className="font-bold text-gray-900 text-sm mb-1"
+          style={{ fontFamily: "'Bai Jamjuree', sans-serif" }}
+        >
+          {service.title}
+        </h3>
+        <p className="text-xs mb-4 leading-relaxed" style={{ color: "rgba(0,0,0,0.4)" }}>
+          {service.desc}
+        </p>
+
+        {/* Price */}
+        <div className="mt-auto pt-4 border-t border-gray-100">
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest font-bold mb-0.5" style={{ color: "rgba(0,0,0,0.3)" }}>
+                Tarif
+              </p>
+              <span
+                className="font-black leading-none"
+                style={{
+                  fontFamily: "'DM Serif Display', serif",
+                  fontSize: "1.5rem",
+                  color: service.highlight ? "#db0000" : "#111111",
+                }}
+              >
+                {service.price}
+              </span>
+            </div>
+            {service.badge && (
+              <span
+                className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full"
+                style={{ background: "rgba(219,0,0,0.12)", color: "#db0000" }}
+              >
+                {service.badge}
+              </span>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </InView>
+  );
+}
+
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const repairTiers = [
@@ -232,7 +306,7 @@ const repairTiers = [
     ],
   },
   {
-    price: "1 000–2 500€",
+    price: "1 000–3 500€",
     priceNote: "Réparations majeures",
     title: "Réparation Majeure",
     desc: "Remplacement d'éléments hydrauliques complexes ou du convertisseur de couple, sans démontage complet de la boîte.",
@@ -280,6 +354,79 @@ const vidangeItems = [
   { label: "Crépine & joints", note: "Remplacement selon état" },
 ];
 
+// ─── Oil change section data ──────────────────────────────────────────────────
+const oilChangeServices = [
+  {
+    title: "Vidange Standard",
+    desc: "Véhicules courants essence ou diesel avec filtre à huile standard. Huile 5W-30 ou 5W-40 selon préconisation constructeur.",
+    price: "100–150€",
+    badge: null,
+    highlight: false,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" />
+        <path d="M12 6v6l4 2" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    title: "Vidange Premium",
+    desc: "Moteurs haute performance, turbocompressés ou hybrides. Huile full-synthétique longue durée 0W-20, 0W-30 ou 0W-40.",
+    price: "129–199€",
+    badge: "Populaire",
+    highlight: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="#db0000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    title: "Vidange Prestige",
+    desc: "Moteurs exigeants BMW M, Porsche, AMG, Audi RS. Huiles homologuées constructeur, filtres OEM garantis, niveau d'exigence maximum.",
+    price: "180–350€",
+    badge: null,
+    highlight: false,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    title: "Vidange Moteur + Boîte",
+    desc: "Forfait combiné vidange moteur et boîte automatique au même rendez-vous. Économisez sur la main-d'œuvre.",
+    price: "Dès 299€",
+    badge: "Forfait",
+    highlight: false,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+        <rect x="2" y="7" width="20" height="14" rx="2" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" />
+        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" />
+        <line x1="12" y1="12" x2="12" y2="16" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="10" y1="14" x2="14" y2="14" stroke="rgba(0,0,0,0.4)" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+];
+
+const oilIncludes = [
+  "Huile moteur sélectionnée selon fiche constructeur",
+  "Remplacement filtre à huile (OEM ou équivalent)",
+  "Vérification et appoint des niveaux (liquide de refroidissement, direction, frein)",
+  "Inspection visuelle des courroies et durites",
+  "Rapport d'état remis après intervention",
+];
+
+const oilTypes = [
+  { grade: "0W-20", usage: "Hybrides, moteurs Atkinson" },
+  { grade: "0W-30 / 0W-40", usage: "BMW M, Porsche, AMG" },
+  { grade: "5W-30", usage: "Diesel courants, moteurs Euro 6" },
+  { grade: "5W-40", usage: "Essence standard, polyvalent" },
+  { grade: "10W-60", usage: "Moteurs haute performance piste" },
+  { grade: "Huiles LongLife", usage: "BMW LL-04, VW 507.00, MB 229.5" },
+];
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function TarifPage() {
   const heroRef = useRef(null);
@@ -314,8 +461,6 @@ export default function TarifPage() {
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden
-          css={{ top: "-10rem", left: "-10rem", width: "680px", height: "680px",
-            background: "radial-gradient(circle, rgba(219,0,0,0.08) 0%, transparent 68%)" }}
         >
           <div
             style={{
@@ -388,7 +533,8 @@ export default function TarifPage() {
           >
             {[
               { label: "Diagnostic", price: "90€ fixe" },
-              { label: "Vidange", price: "300 – 600€" },
+              { label: "Vidange boîte", price: "300 – 600€" },
+              { label: "Vidange moteur", price: "79 – 299€" },
               { label: "Réparation", price: "Dès 300€" },
               { label: "Révision complète", price: "Sur devis" },
             ].map((b, i) => (
@@ -532,7 +678,7 @@ export default function TarifPage() {
         <Divider />
 
         {/* ═══════════════════════════════════════════════════════════
-            SECTION 2 — VIDANGE
+            SECTION 2 — VIDANGE BOÎTE
         ═══════════════════════════════════════════════════════════ */}
         <section className="pb-4">
           <div className="text-center mb-14">
@@ -668,7 +814,7 @@ export default function TarifPage() {
         {/* ═══════════════════════════════════════════════════════════
             SECTION 3 — RÉPARATIONS (4 tiers)
         ═══════════════════════════════════════════════════════════ */}
-        <section className="pb-28">
+        <section className="pb-10">
           <div className="text-center mb-14">
             <InView>
               <Tag>Prestation #3</Tag>
@@ -697,11 +843,158 @@ export default function TarifPage() {
               <TierCard key={i} tier={tier} delay={i} />
             ))}
           </div>
+        </section>
 
-          {/* Bottom CTA band */}
+        <Divider />
+
+        {/* ═══════════════════════════════════════════════════════════
+            SECTION 4 — VIDANGE MOTEUR (NEW)
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="pb-10">
+          <div className="text-center mb-14">
+            <InView>
+              <Tag>Prestation #4</Tag>
+            </InView>
+            <InView>
+              <h2
+                className="font-black leading-tight mb-4"
+                style={{
+                  fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
+                  fontFamily: "'DM Serif Display', serif",
+                  color: "#111111",
+                }}
+              >
+                Vidange <span style={{ color: "#db0000" }}>moteur</span>
+              </h2>
+            </InView>
+            <InView>
+              <p className="text-sm max-w-2xl mx-auto" style={{ color: "rgba(0,0,0,0.45)" }}>
+                De <strong className="text-gray-900">79€ à 299€</strong> selon le grade d'huile, la motorisation et le véhicule. Filtre à huile et appoint des niveaux toujours inclus.
+              </p>
+            </InView>
+          </div>
+
+          {/* 4 service cards */}
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-14">
+            {oilChangeServices.map((service, i) => (
+              <OilServiceCard key={i} service={service} delay={i} />
+            ))}
+          </div>
+
+          {/* Two-column detail block */}
+          <div className="grid lg:grid-cols-2 gap-10 items-start">
+
+            {/* What's included */}
+            <InView>
+              <div
+                className="rounded-2xl p-8 border border-gray-200 h-full"
+                style={{ background: "#f8f8f8" }}
+              >
+                <p className="text-xs font-bold uppercase tracking-widest mb-6" style={{ color: "rgba(0,0,0,0.3)" }}>
+                  Inclus dans toutes les formules
+                </p>
+                <div className="space-y-3">
+                  {oilIncludes.map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div
+                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                        style={{ background: "rgba(219,0,0,0.15)" }}
+                      >
+                        <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3">
+                          <path d="M2 6l3 3 5-5" stroke="#db0000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <span className="text-sm leading-relaxed" style={{ color: "rgba(0,0,0,0.5)" }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Interval note */}
+                <div
+                  className="mt-8 rounded-xl p-5 border"
+                  style={{ background: "rgba(219,0,0,0.06)", borderColor: "rgba(219,0,0,0.2)" }}
+                >
+                  <div className="flex gap-3 items-start">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 shrink-0 mt-0.5" style={{ color: "#db0000" }}>
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M12 8v4m0 4h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <p className="text-xs leading-relaxed" style={{ color: "rgba(0,0,0,0.45)" }}>
+                      Intervalle recommandé : <strong className="text-gray-900">tous les 10 000 à 20 000 km</strong> selon le constructeur. Un changement d'huile régulier est le premier facteur de longévité moteur.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </InView>
+
+            {/* Oil grades grid */}
+            <div>
+              <InView>
+                <p className="text-xs font-bold uppercase tracking-widest mb-5" style={{ color: "rgba(0,0,0,0.3)" }}>
+                  Grades d'huile disponibles
+                </p>
+              </InView>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {oilTypes.map((oil, i) => (
+                  <InView key={i} custom={i}>
+                    <div
+                      className="rounded-xl p-4 border border-gray-200 hover:border-red-300 transition-colors duration-300"
+                      style={{ background: "#f8f8f8" }}
+                    >
+                      <div
+                        className="w-2 h-2 rounded-full mb-3"
+                        style={{ background: "#db0000" }}
+                      />
+                      <p className="text-xs font-bold text-gray-900 mb-1">{oil.grade}</p>
+                      <p className="text-xs leading-snug" style={{ color: "rgba(0,0,0,0.35)" }}>{oil.usage}</p>
+                    </div>
+                  </InView>
+                ))}
+              </div>
+
+              {/* Price summary bar */}
+              <InView>
+                <div className="rounded-2xl border border-gray-200 overflow-hidden" style={{ background: "#f8f8f8" }}>
+                  <div className="px-6 py-4 border-b border-gray-100">
+                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.3)" }}>
+                      Récapitulatif des tarifs
+                    </p>
+                  </div>
+                  {[
+                    { label: "Vidange Standard", price: "79–129€", note: "Huile minérale / semi-synthèse" },
+                    { label: "Vidange Premium", price: "129–199€", note: "Full-synthèse longue durée" },
+                    { label: "Vidange Prestige", price: "199–299€", note: "Homologuée constructeur" },
+                    { label: "Forfait Moteur + Boîte", price: "Dès 299€", note: "Économisez sur la MO" },
+                  ].map((row, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between px-6 py-3.5 border-b border-gray-100 last:border-0"
+                    >
+                      <div>
+                        <p className="text-xs font-semibold text-gray-900">{row.label}</p>
+                        <p className="text-[10px]" style={{ color: "rgba(0,0,0,0.35)" }}>{row.note}</p>
+                      </div>
+                      <span
+                        className="text-sm font-black"
+                        style={{ fontFamily: "'DM Serif Display', serif", color: "#db0000" }}
+                      >
+                        {row.price}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </InView>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            BOTTOM CTA BAND
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="pb-28">
           <InView>
             <div
-              className="mt-14 rounded-3xl p-10 lg:p-14 border border-gray-200 relative overflow-hidden"
+              className="mt-6 rounded-3xl p-10 lg:p-14 border border-gray-200 relative overflow-hidden"
               style={{ background: "#fdf3f3" }}
             >
               <div
@@ -725,7 +1018,7 @@ export default function TarifPage() {
                     Besoin d'un devis précis ?
                   </p>
                   <p className="text-sm max-w-lg" style={{ color: "rgba(0,0,0,0.45)" }}>
-                    Chaque boîte est différente. Contactez-nous avec l'immatriculation et le modèle exact — nous vous répondons sous 24h avec un diagnostic complet et un devis transparent.
+                    Chaque véhicule est différent. Contactez-nous avec l'immatriculation et le modèle exact — nous vous répondons sous 24h avec un diagnostic complet et un devis transparent.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 shrink-0">

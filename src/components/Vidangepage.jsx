@@ -645,7 +645,7 @@ export default function VidangePage() {
           <Reveal delay={0.1}>
             <div className="mt-8 rounded-2xl overflow-hidden border" style={{ borderColor: T.border }}>
               <video
-                src="/videos/hero2.mp4"
+                src="/videos/hero4.mp4"
                 className="w-full max-h-[480px] object-cover"
                 autoPlay muted loop playsInline
                 onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}

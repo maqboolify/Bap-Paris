@@ -17,6 +17,7 @@ import Calculators from './components/Calculators'
 import TransmissionsAutomatiques from './components/TransmissionsAutomatiques'
 import MechatronicsPage from './components/Mechatronicspage'
 import ItemPage from './components/ItemPage'
+import GearboxCatalog from './components/Gearboxcatalog'
 function App() {
   return (
     <>
@@ -39,6 +40,7 @@ function App() {
         <Route path="/pieces/mecatroniques"element={<MechatronicsPage />} />
         <Route path="/ressources/type-de-bva"element={<TypeDeBVAPage />} />
         <Route path="/ressources/faq"element={<FaqPage />} />
+        <Route path="/pieces/manuelles"element={<GearboxCatalog />} />
 
 
 

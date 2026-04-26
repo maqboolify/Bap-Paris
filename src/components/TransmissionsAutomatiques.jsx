@@ -34,7 +34,7 @@ const transmissions = [
     name: "6HP26",
     description: "Boîte de vitesses à convertisseur de couple de marque ZF.",
     longDescription: "La 6HP26 est une boîte de vitesses automatique à convertisseur de couple de marque ZF à 6 rapports. Elle équipe de nombreux véhicules BMW, Audi, Land Rover et Rolls-Royce.",
-    price: 2900,
+    price: 3900,
     inStock: false,
     image: "/images/6HP26.webp",
   },
@@ -79,7 +79,7 @@ const transmissions = [
     name: "0B5 (DL501)",
     description: "Transmission à double embrayage (Audi).",
     longDescription: "La 0B5 (DL501) est une transmission à double embrayage développée pour les véhicules Audi à transmission intégrale Quattro. Elle combine l'agrément d'une boîte automatique avec les performances d'une boîte manuelle.",
-    price: 3800,
+    price: 4800,
     inStock: false,
     image: "/images/0B5DL501.webp",
   },
@@ -119,6 +119,15 @@ const transmissions = [
     inStock: true,
     image: "/images/TF80.webp",
   },
+  {
+    id: 14,
+    name: "HF35",
+    description: "Boîte de vitesses à convertisseur de couple de marque Aisin.",
+    longDescription: "La TF80 est une boîte de vitesses automatique à convertisseur de couple de marque Aisin à 6 rapports. Elle équipe des véhicules Volvo, Peugeot, Citroën et Opel.",
+    price: 3600,
+    inStock: true,
+    image: "/images/img.png",
+  },
 ];
 
 function StockBadge({ inStock }) {
@@ -156,7 +165,7 @@ function Modal({ product, onClose }) {
 
         <h2 className="text-xl font-semibold text-gray-900 mb-1">{product.name}</h2>
         <div className="mb-4">
-          <StockBadge inStock={product.inStock} />
+          {/* <StockBadge inStock={product.inStock} /> */}
         </div>
 
         <div className="bg-gray-50 rounded-xl flex items-center justify-center p-4 mb-5" style={{ minHeight: 200 }}>
@@ -179,7 +188,7 @@ function Modal({ product, onClose }) {
         </p>
 
         <p className="text-center text-lg font-semibold text-gray-900 mb-6">
-          {product.price.toLocaleString("fr-FR")} €
+          {product.price.toLocaleString("fr-FR")} €  (HT)
         </p>
         
         <div className="flex justify-center">
@@ -220,11 +229,11 @@ function TransmissionCard({ product, onOpen }) {
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="font-bold text-gray-900 text-base">{product.name}</h3>
-          <StockBadge inStock={product.inStock} />
+          {/* <StockBadge inStock={product.inStock} /> */}
         </div>
         <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-3">{product.description}</p>
         <p className="text-base font-semibold text-gray-900 mb-4">
-          {product.price.toLocaleString("fr-FR")} €
+          {product.price.toLocaleString("fr-FR")} € (HT)
         </p>
         <div>
           <button

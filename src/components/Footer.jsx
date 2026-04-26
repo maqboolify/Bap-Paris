@@ -69,13 +69,16 @@ export default function BapParis() {
 
   return (
     <div className="bg-black w-full relative overflow-hidden flex flex-col items-center justify-start pt-20 box-border" style={{ minHeight: 350 }}>
-      {/* Title */}
-      <h1 className="text-white font-extrabold relative z-10 leading-none m-0 tracking-tight"
-          style={{ fontSize: "clamp(3.5rem, 11vw, 7rem)", letterSpacing: "-0.02em" }}>
-        BAP <span className="text-red-500 text-[0.7em] align-middle">
-    Paris
-  </span>
-      </h1>
+      
+      {/* Logo Image (replaces text) */}
+      <a href="/" className="relative z-10 mb-2">
+        <img
+          src="/images/logo.png"
+          alt="BAP Paris Auto Garage"
+          className="h-[130px] md:h-[170px] w-auto object-contain"
+          style={{ filter: "drop-shadow(0 0 18px rgba(219,0,0,0.45))" }}
+        />
+      </a>
 
       {/* Particle wrap */}
       <div ref={wrapRef} className="relative w-full flex-1">

@@ -23,21 +23,22 @@ const slides = [
     overlay: "from-black/80 via-black/50 to-transparent",
   },
   {
-    id: 2,
-    tag: "Spécialiste CVT & DSG",
-    title: (
-      <>
-        Vidange &amp; Entretien<br />
-        Toutes Transmissions
-      </>
-    ),
-    titleText: "Vidange & Entretien Toutes Transmissions",
-    cta: "Voir les Tarifs",
-    ctaHref: "#tarifs",
-    video: "/videos/hero2.mp4",
-    poster: "/videos/slide2-poster.jpg",
-    overlay: "from-black/80 via-black/50 to-transparent",
-  },
+  id: 2,
+  tag: "Entretien Préventif",
+  title: (
+    <>
+      Vidange Huile<br />
+      Boîte de Vitesses
+    </>
+  ),
+  titleText: "Vidange Huile Boîte de Vitesses",
+  cta: "Prendre RDV",
+  ctaHref: "#contact",
+  video: "/videos/hero4.mp4",
+  poster: "/videos/slide4-poster.jpg",
+  overlay: "from-black/80 via-black/50 to-transparent",
+},
+  
   {
     id: 3,
     tag: "Mécatronique",
@@ -54,6 +55,23 @@ const slides = [
     poster: "/videos/slide3-poster.jpg",
     overlay: "from-black/80 via-black/50 to-transparent",
   },
+  {
+    id: 4,
+    tag: "Spécialiste CVT & DSG",
+    title: (
+      <>
+        Vidange &amp; Entretien<br />
+        Tout Moteur
+      </>
+    ),
+    titleText: "Vidange & Entretien Tout Moteur",
+    cta: "Voir les Tarifs",
+    ctaHref: "#tarifs",
+    video: "/videos/hero2.mp4",
+    poster: "/videos/slide2-poster.jpg",
+    overlay: "from-black/80 via-black/50 to-transparent",
+  },
+  
 ];
 
 const carBrands = [
@@ -240,7 +258,7 @@ function CarSidebar({ height, isMobile }) {
           {carBrands.map((brand, idx) => (
             <a
               key={idx}
-              href={`/ressources/articles/${brand.slug}`}
+              href={`/articles`}
               className="relative block rounded-md overflow-hidden group"
               style={{ width: "120px", height: "70px", flexShrink: 0 }}
             >
@@ -294,7 +312,7 @@ function CarSidebar({ height, isMobile }) {
         {carBrands.map((brand, idx) => (
           <a
             key={idx}
-            href={`/ressources/articles/${brand.slug}`}
+            href={`/articles`}
             className="relative block rounded-md overflow-hidden group"
             style={{ aspectRatio: "2 / 1", flexShrink: 0 }}
             // Prevent link click when dragging
@@ -332,7 +350,7 @@ export default function Hero() {
   const [isMobile, setIsMobile] = useState(false);
 
   const readySet = useRef(new Set());
-
+  const videoRefs = useRef([]);
   const sliderHeight = "min(88vh, 720px)";
 
   // Detect mobile
@@ -388,7 +406,17 @@ export default function Hero() {
     }, 8000);
     return () => clearTimeout(id);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  useEffect(() => {
+  videoRefs.current.forEach((el, i) => {
+    if (!el) return;
+    if (i === current) {
+      el.currentTime = 0;
+      el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  });
+}, [current]);
   const slide = slides[current];
 
   return (
