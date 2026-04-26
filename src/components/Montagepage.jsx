@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-
+import { Link } from "react-router-dom";
 // ─── Google Fonts ─────────────────────────────────────────────────────────────
 const fontLink = document.createElement("link");
 fontLink.href =
@@ -228,7 +228,7 @@ function Hero() {
         >
           {["Accueil", "Prestations", "Montage"].map((item, i, arr) => (
             <li key={item} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <a
+              <Link
                 href="#"
                 style={{
                   color: i === arr.length - 1 ? RED : "#999",
@@ -237,7 +237,7 @@ function Hero() {
                 }}
               >
                 {item}
-              </a>
+              </Link>
               {i < arr.length - 1 && <span style={{ color: "#ddd" }}>›</span>}
             </li>
           ))}

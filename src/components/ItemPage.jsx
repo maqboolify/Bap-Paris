@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 const audiModelImages = {
   "A1": "https://static.moniteurautomobile.be/imgcontrol/images_tmp/clients/moniteur/c1440-d720/content/medias/images/news/28000/500/60/audi-a1-2018-01.jpg",
   "A2": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Audi_A2_8Z.jpg",
@@ -688,9 +688,9 @@ export default function CarsPage() {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", minHeight: "100vh", background: "#f9f9fb", padding: "40px 32px" }}>
       <nav style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#888", marginBottom: 36 }}>
-        <a href="#" style={{ color: "#888", textDecoration: "none" }}>Home</a>
+        <Link to="#" style={{ color: "#888", textDecoration: "none" }}>Home</Link>
         <span>›</span>
-        <a href="#" style={{ color: "#888", textDecoration: "none" }}>RESOURCES</a>
+        <Link to="#" style={{ color: "#888", textDecoration: "none" }}>RESOURCES</Link>
         <span>›</span>
         <span style={{ color: "#2563eb", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Items</span>
       </nav>

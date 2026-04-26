@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-
+import { Link } from "react-router-dom";
 /* ─── Google Fonts ─────────────────────────────────────────────────────────── */
 const FontLoader = () => (
   <>
@@ -251,8 +251,8 @@ export default function MecatroniquePage() {
             >
               {["Accueil", "Prestations", "Mécatronique"].map((item, i, arr) => (
                 <span key={item} className="flex items-center gap-2">
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className={
                       i === arr.length - 1
                         ? "text-red-500 pointer-events-none"
@@ -260,7 +260,7 @@ export default function MecatroniquePage() {
                     }
                   >
                     {item}
-                  </a>
+                  </Link>
                   {i < arr.length - 1 && <span className="text-neutral-700">/</span>}
                 </span>
               ))}

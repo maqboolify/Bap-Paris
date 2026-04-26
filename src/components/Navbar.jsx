@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-
+import { Link } from "react-router-dom";
 // ─── Icons (inline SVGs to avoid dependency) ──────────────────────────────────
 const FacebookIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -210,23 +210,23 @@ function TopBar() {
           { icon: <TwitterIcon />, href: "#", label: "Twitter" },
           { icon: <YoutubeIcon />, href: "#", label: "YouTube" },
         ].map(({ icon, href, label }) => (
-          <a
+          <Link
             key={label}
-            href={href}
+            to={href}
             aria-label={label}
             className="text-white/50 hover:text-white transition-colors duration-200"
           >
             {icon}
-          </a>
+          </Link>
         ))}
         <span className="w-px h-4 bg-white/10 mx-1" />
-        <a
-          href="tel:+33145147254"
+        <Link
+          to="tel:+33145147254"
           className="flex items-center gap-2 text-white/60 hover:text-white text-[11px] uppercase tracking-widest font-medium transition-colors duration-200"
         >
           <PhoneIcon />
           HOTLINE : +33 1 45 14 72 54
-        </a>
+        </Link>
       </div>
       <div className="flex items-center gap-5">
         <button className="flex items-center gap-2 text-white/60 hover:text-white text-[11px] uppercase tracking-widest font-medium transition-colors duration-200">
@@ -262,15 +262,15 @@ function MegaMenu({ columns }) {
             <ul className="space-y-2">
               {col.items.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className="text-[16px] font-medium text-[#444] hover:text-[#db0000] hover:pl-1 transition-all duration-150 flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-3 overflow-hidden transition-all duration-150 text-[#db0000]">
                       <ChevronRightIcon />
                     </span>
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -307,8 +307,8 @@ function NavItem({ link, isSticky }) {
       onMouseEnter={() => link.children && setOpen(true)}
       onMouseLeave={() => link.children && setOpen(false)}
     >
-      <a
-        href={link.href}
+      <Link
+        to={link.href}
         className={`relative flex items-center gap-1.5 h-full px-4 xl:px-5 text-[16px] font-[800] uppercase tracking-[0.12em] transition-colors duration-200
           ${isSticky ? "text-[#222]" : "text-[#222]"}
           hover:text-[#db0000]
@@ -321,7 +321,7 @@ function NavItem({ link, isSticky }) {
             <ChevronDownIcon />
           </span>
         )}
-      </a>
+      </Link>
       {link.children && open && <MegaMenu columns={link.children} />}
     </li>
   );
@@ -382,13 +382,13 @@ function MobileDrawer({ open, onClose }) {
                     <div key={ci} className="px-5 pt-3">
                       <p className="text-[10px] uppercase tracking-widest text-[#db0000] font-bold mb-2">{col.title}</p>
                       {col.items.map((item) => (
-                        <a
+                        <Link
                           key={item.label}
-                          href={item.href}
+                          to={item.href}
                           className="block py-1.5 text-[13px] text-[#555] hover:text-[#db0000] transition-colors pl-2 border-l-2 border-transparent hover:border-[#db0000]"
                         >
                           {item.label}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   ))}
@@ -398,14 +398,14 @@ function MobileDrawer({ open, onClose }) {
           ))}
         </nav>
         <div className="px-5 py-5 border-t border-gray-100 bg-gray-50 space-y-2">
-          <a href="tel:+33145147254" className="flex items-center gap-3 text-[13px] text-[#444] hover:text-[#db0000] transition-colors">
+          <Link to="tel:+33145147254" className="flex items-center gap-3 text-[13px] text-[#444] hover:text-[#db0000] transition-colors">
             <PhoneIcon /> +33 1 45 14 72 54
-          </a>
+          </Link>
           <div className="flex gap-4 pt-2">
             {[FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon].map((Icon, i) => (
-              <a key={i} href="#" className="text-[#999] hover:text-[#db0000] transition-colors">
+              <Link key={i} href="#" className="text-[#999] hover:text-[#db0000] transition-colors">
                 <Icon />
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -624,12 +624,12 @@ function CartSidebar({ open, onClose }) {
           </div>
           <p className="text-[13px] text-gray-500 font-medium">Votre panier est vide</p>
           <p className="text-[12px] text-gray-400 mt-1">Ajoutez des services ou pièces pour commencer</p>
-          <a
-            href="/prestations"
+          <Link
+            to="/prestations"
             className="mt-6 inline-block bg-[#111] text-white text-[11px] uppercase tracking-widest font-bold px-6 py-3 hover:bg-[#db0000] transition-colors duration-200"
           >
             Voir les prestations
-          </a>
+          </Link>
         </div>
       </div>
     </>
@@ -689,13 +689,13 @@ export default function Navbar() {
               >
                 <MenuIcon />
               </button>
-              <a href="/" className="flex items-center shrink-0 -my-4">
+              <Link to="/" className="flex items-center shrink-0 -my-4">
   <img
     src="/images/logo.png"
     alt="BAP Paris Auto Garage"
     className="h-[110px] md:h-[150px] w-auto object-contain mix-blend-multiply"
   />
-</a>
+</Link>
               {/* <a href="/" className="flex items-center shrink-0 -my-3">
   <img
     src="/images/logo.png"
@@ -727,21 +727,7 @@ export default function Navbar() {
                 className="relative hidden md:flex w-[42px] h-[42px] items-center justify-center text-white hover:text-[#db0000] transition-colors duration-200"
                 aria-label="Favoris"
               >
-                {/* <HeartIcon />
-                <span className="absolute top-1 right-1 bg-[#db0000] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none">
-                  0
-                </span>
-              </button>
-              <button
-                onClick={() => setCartOpen(true)}
-                className="relative flex items-center gap-2 bg-[#111] hover:bg-[#db0000] text-white px-4 h-[42px] transition-all duration-200 group"
-                aria-label="Panier"
-              >
-                <CartIcon />
-                <span className="hidden md:block text-[11px] font-bold uppercase tracking-wider">Panier</span>
-                <span className="absolute -top-1.5 -right-1.5 bg-[#db0000] group-hover:bg-white group-hover:text-[#db0000] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none transition-colors duration-200">
-                  0
-                </span> */}
+                
               </button>
             </div>
           </div>

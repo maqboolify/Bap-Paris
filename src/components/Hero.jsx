@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import ReviewsMarquee from "./ReviewsMarquee";
 import Footer from "./Footer";
-
+import { Link } from "react-router-dom";
 // Google Font loaded via link tag — add this to your index.html <head> if not already present:
 // <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -256,8 +256,8 @@ function CarSidebar({ height, isMobile }) {
           }}
         >
           {carBrands.map((brand, idx) => (
-            <a
-              key={idx}
+            <Link
+              to={idx}
               href={`/articles`}
               className="relative block rounded-md overflow-hidden group"
               style={{ width: "120px", height: "70px", flexShrink: 0 }}
@@ -277,7 +277,7 @@ function CarSidebar({ height, isMobile }) {
                   {brand.name}
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -310,9 +310,9 @@ function CarSidebar({ height, isMobile }) {
         }}
       >
         {carBrands.map((brand, idx) => (
-          <a
+          <Link
             key={idx}
-            href={`/articles`}
+            to={`/articles`}
             className="relative block rounded-md overflow-hidden group"
             style={{ aspectRatio: "2 / 1", flexShrink: 0 }}
             // Prevent link click when dragging
@@ -333,7 +333,7 @@ function CarSidebar({ height, isMobile }) {
                 {brand.name}
               </span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
@@ -499,8 +499,8 @@ export default function Hero() {
                         transitionDelay: "160ms",
                       }}
                     >
-                      <a
-                        href={slide.ctaHref}
+                      <Link
+                        to={slide.ctaHref}
                         className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[50px] transition-all duration-300 group"
                         style={{ background: "#db0000" }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = "#b50000")}
@@ -640,8 +640,8 @@ export default function Hero() {
                       transition: "all 500ms",
                     }}
                   >
-                    <a
-                      href={slide.ctaHref}
+                    <Link
+                      to={slide.ctaHref}
                       className="inline-flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-white rounded-full px-5 h-[42px] transition-all duration-300"
                       style={{ background: "#db0000" }}
                     >
@@ -649,7 +649,7 @@ export default function Hero() {
                       <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3">
                         <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

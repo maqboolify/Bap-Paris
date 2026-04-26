@@ -5,7 +5,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-
+import { Link } from "react-router-dom";
 // ─── Theme tokens ─────────────────────────────────────────────────────────────
 const T = {
   bg: "#ffffff",
@@ -369,8 +369,8 @@ export default function VidangePage() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="flex flex-wrap gap-3"
               >
-                <a
-                  href="/contact"
+                <Link
+                  to="/contact"
                   className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[50px] transition-all duration-300 hover:scale-[1.03]"
                   style={{ background: T.red }}
                 >
@@ -378,14 +378,14 @@ export default function VidangePage() {
                   <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
                     <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </a>
-                <a
-                  href="#pourquoi"
+                </Link>
+                <Link
+                  to="#pourquoi"
                   className="inline-flex items-center gap-2 font-semibold text-xs uppercase tracking-wider h-[50px] px-8 rounded-full border border-gray-300 hover:border-gray-500 transition-all duration-300"
                   style={{ color: T.muted }}
                 >
                   En savoir plus
-                </a>
+                </Link>
               </motion.div>
             </div>
 
@@ -457,13 +457,13 @@ export default function VidangePage() {
               </div>
 
               <Reveal>
-                <a
-                  href="/contact"
+                <Link
+                  to="/contact"
                   className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[48px] transition-all duration-300 hover:scale-[1.03]"
                   style={{ background: T.red }}
                 >
                   Nous Contacter
-                </a>
+                </Link>
               </Reveal>
             </div>
 
@@ -751,8 +751,8 @@ export default function VidangePage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 shrink-0">
-                  <a
-                    href="/contact"
+                  <Link
+                    to="/contact"
                     className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[50px] transition-all duration-300 hover:scale-[1.03] whitespace-nowrap"
                     style={{ background: T.red }}
                   >
@@ -760,14 +760,14 @@ export default function VidangePage() {
                     <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
                       <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                  </a>
-                  <a
-                    href="tel:0145147254"
+                  </Link>
+                  <Link
+                    to="tel:0145147254"
                     className="inline-flex items-center gap-2 font-semibold text-xs uppercase tracking-wider h-[50px] px-8 rounded-full border border-gray-300 hover:border-gray-500 transition-all duration-300 whitespace-nowrap"
                     style={{ color: T.muted }}
                   >
                     01 45 14 72 54
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

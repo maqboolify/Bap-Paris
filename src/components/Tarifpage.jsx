@@ -2,7 +2,7 @@
 // Requires: framer-motion  (`npm install framer-motion`)
 // Font: add to index.html <head>
 // <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-
+import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import {
   motion,
@@ -168,8 +168,8 @@ function TierCard({ tier, delay }) {
         </div>
 
         <div className="px-6 pb-6">
-          <a
-            href="/contact"
+          <Link
+            to="/contact"
             className="block text-center font-bold text-xs uppercase tracking-wider rounded-xl py-3.5 transition-all duration-300"
             style={
               tier.featured
@@ -184,7 +184,7 @@ function TierCard({ tier, delay }) {
             }}
           >
             Demander un devis
-          </a>
+          </Link>
         </div>
       </motion.div>
     </InView>
@@ -484,7 +484,7 @@ export default function TarifPage() {
             className="flex items-center gap-2 text-xs mb-8"
             style={{ color: "rgba(0,0,0,0.3)" }}
           >
-            <a href="/" className="hover:text-red-500 transition-colors">Accueil</a>
+            <Link to="/" className="hover:text-red-500 transition-colors">Accueil</Link>
             <span>/</span>
             <span style={{ color: "#db0000" }}>Tarifs</span>
           </motion.div>
@@ -1022,8 +1022,8 @@ export default function TarifPage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 shrink-0">
-                  <a
-                    href="/contact"
+                  <Link
+                    to="/contact"
                     className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[50px] transition-all duration-300 hover:scale-[1.03] whitespace-nowrap"
                     style={{ background: "#db0000" }}
                   >
@@ -1031,13 +1031,13 @@ export default function TarifPage() {
                     <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
                       <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                  </a>
-                  <a
-                    href="tel:0145147254"
+                  </Link>
+                  <Link
+                    to="tel:0145147254"
                     className="inline-flex items-center gap-2 font-semibold text-xs uppercase tracking-wider h-[50px] px-8 rounded-full border border-gray-300 text-gray-600 hover:text-gray-900 hover:border-gray-500 transition-all duration-300 whitespace-nowrap"
                   >
                     01 45 14 72 54
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

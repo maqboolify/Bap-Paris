@@ -10,7 +10,7 @@ import {
   useTransform,
   useInView,
 } from "framer-motion";
-
+import { Link } from "react-router-dom";
 // ─── Animation helpers ────────────────────────────────────────────────────────
 
 const fadeUp = {
@@ -228,8 +228,8 @@ export default function DiagnosticPage() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="flex flex-wrap gap-4"
             >
-              <a
-                href="#contact"
+              <Link
+                to="#contact"
                 className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[50px] transition-all duration-300 hover:scale-[1.03]"
                 style={{ background: "#db0000" }}
               >
@@ -237,13 +237,13 @@ export default function DiagnosticPage() {
                 <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </a>
-              <a
-                href="#diagnostic"
+              </Link>
+              <Link
+                to="#diagnostic"
                 className="inline-flex items-center gap-2 font-semibold text-xs uppercase tracking-wider h-[50px] px-8 rounded-full border border-black/15 text-black/70 hover:text-black hover:border-black/40 transition-all duration-300"
               >
                 En savoir plus
-              </a>
+              </Link>
             </motion.div>
           </div>
 
@@ -324,13 +324,13 @@ export default function DiagnosticPage() {
               </p>
             </InView>
             <InView>
-              <a
-                href="/contact"
+              <Link
+                to="/contact"
                 className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[48px] transition-all duration-300 hover:scale-[1.03]"
                 style={{ background: "#db0000" }}
               >
                 Contactez-nous
-              </a>
+              </Link>
             </InView>
           </div>
 
@@ -479,9 +479,9 @@ export default function DiagnosticPage() {
             <InView>
               <p className="text-sm leading-relaxed mb-8" style={{ color: "rgba(0,0,0,0.55)" }}>
                 Chez Bap Paris, nos techniciens maîtrisent les "petits secrets" de chaque système pour distinguer une fausse alerte d'une défaillance réelle. Retrouvez notre récapitulatif des codes défaut dans notre{" "}
-                <a href="/ressources/aide-en-ligne" className="font-semibold underline underline-offset-2 hover:text-red-400 transition-colors" style={{ color: "#db0000" }}>
+                <Link to="/ressources/aide-en-ligne" className="font-semibold underline underline-offset-2 hover:text-red-400 transition-colors" style={{ color: "#db0000" }}>
                   base de ressources en ligne
-                </a>.
+                </Link>.
               </p>
             </InView>
 
@@ -658,15 +658,15 @@ export default function DiagnosticPage() {
               </p>
               <p className="text-sm leading-relaxed mb-10" style={{ color: "rgba(0,0,0,0.55)" }}>
                 Chez Bap Paris, deux actions sont au cœur de chaque diagnostic : d'abord maîtriser en détail le modèle de boîte concerné (
-                <a href="/ressources/type-de-bva" className="underline underline-offset-2 hover:text-red-400 transition-colors" style={{ color: "#db0000" }}>
+                <Link to="/ressources/type-de-bva" className="underline underline-offset-2 hover:text-red-400 transition-colors" style={{ color: "#db0000" }}>
                   voir notre guide Type de BVA
-                </a>
+                </Link>
                 ), puis effectuer un diagnostic électronique et mécanique complet — niveaux d'huile, crépine, supports moteur et boîte — pour garantir que la panne identifiée est bien la source réelle du problème.
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <a
-                  href="/contact"
+                <Link
+                  to="/contact"
                   className="inline-flex items-center gap-3 font-bold text-xs uppercase tracking-wider text-white rounded-full px-8 h-[50px] transition-all duration-300 hover:scale-[1.03]"
                   style={{ background: "#db0000" }}
                 >
@@ -674,13 +674,13 @@ export default function DiagnosticPage() {
                   <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
                     <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </a>
-                <a
-                  href="/tarif"
+                </Link>
+                <Link
+                  to="/tarif"
                   className="inline-flex items-center gap-2 font-semibold text-xs uppercase tracking-wider h-[50px] px-8 rounded-full border border-black/15 text-black/70 hover:text-black hover:border-black/40 transition-all duration-300"
                 >
                   Voir les Tarifs
-                </a>
+                </Link>
               </div>
             </div>
           </div>

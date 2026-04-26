@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-
+import { Link } from "react-router-dom";
 /* ─── Google Fonts ─────────────────────────────────────────────────────────── */
 const FontLoader = () => (
   <>
@@ -277,15 +277,15 @@ function ResultCard({ result, brand, model, year }) {
         <p className="text-neutral-600 text-sm leading-relaxed mb-5">{result.detail}</p>
 
         {/* CTA */}
-        <a
-          href="/contact"
+        <Link
+          to="/contact"
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors duration-200 shadow-md shadow-red-600/20"
         >
           Prendre rendez-vous
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
-        </a>
+        </Link>
       </motion.div>
     </AnimatePresence>
   );
@@ -385,9 +385,9 @@ export default function TypeDeBVAPage() {
             >
               {["Accueil", "Ressources", "Type de BVA"].map((item, i, arr) => (
                 <span key={item} className="flex items-center gap-2">
-                  <a href="#" className={i === arr.length - 1 ? "text-red-500 pointer-events-none" : "hover:text-red-400 transition-colors"}>
+                  <Link to="#" className={i === arr.length - 1 ? "text-red-500 pointer-events-none" : "hover:text-red-400 transition-colors"}>
                     {item}
-                  </a>
+                  </Link>
                   {i < arr.length - 1 && <span className="text-neutral-700">/</span>}
                 </span>
               ))}

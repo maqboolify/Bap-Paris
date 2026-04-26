@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-
+import { Link } from "react-router-dom";
 // ─── Google Font ──────────────────────────────────────────────────────────────
 // Add to your index.html <head>:
 // <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -313,8 +313,8 @@ function ProductModal({ item, onClose }) {
 
             {/* CTA buttons */}
             <div style={{ display: "flex", gap: 10 }}>
-              <a
-                href={CONTACT_URL}
+              <Link
+                to={CONTACT_URL}
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   background: "#db0000", color: "#fff",
@@ -327,7 +327,7 @@ function ProductModal({ item, onClose }) {
               >
                 <PhoneIcon />
                 Nous contacter
-              </a>
+              </Link>
               <button
                 onClick={onClose}
                 style={{
@@ -572,7 +572,7 @@ export default function GearboxCatalog() {
       {/* ── Breadcrumb ── */}
       <div style={{ maxWidth: 1300, margin: "0 auto", padding: "12px 20px 0" }}>
         <p style={{ fontSize: 12, color: "#888", display: "flex", gap: 6, alignItems: "center" }}>
-          <a href="/" style={{ color: "#888", textDecoration: "none" }}>Accueil</a>
+          <Link href="/" style={{ color: "#888", textDecoration: "none" }}>Accueil</Link>
           <span style={{ opacity: 0.5 }}>›</span>
           <span style={{ color: "#db0000" }}>{activeBrand === "all" ? "Toutes marques" : activeBrand}</span>
         </p>

@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-
+import { Link } from "react-router-dom";
 // ─── FAQ DATA ────────────────────────────────────────────────────────────────
 // Replace the question/answer text below with your own content.
 // Each item has: id, category, question, answer
