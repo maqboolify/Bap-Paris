@@ -512,7 +512,7 @@ export default function Hero() {
                             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
