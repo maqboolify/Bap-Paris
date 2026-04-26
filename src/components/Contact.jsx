@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
-
+import { Link } from "react-router-dom";
 // ─── EMAILJS CONFIG ──────────────────────────────────────────────────────────
 // 🔑 Paste your own EmailJS credentials here:
 const EMAILJS_SERVICE_ID  = "service_t9wyhci";   // e.g. "service_xxxxxxx"
@@ -514,7 +514,7 @@ export default function BAPContactPage() {
             initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
             className="flex items-center gap-2 mb-5"
           >
-            <a href="/" className="text-white/40 text-xs tracking-[0.06em] no-underline uppercase hover:text-white/70 transition-colors">Accueil</a>
+            <Link to="/" className="text-white/40 text-xs tracking-[0.06em] no-underline uppercase hover:text-white/70 transition-colors">Accueil</Link>
             <span className="text-white/20 text-[11px]">›</span>
             <span className="text-red-600 text-xs tracking-[0.06em] uppercase font-bold">Contact</span>
           </motion.nav>
@@ -573,10 +573,10 @@ export default function BAPContactPage() {
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-gray-500 mb-1">{card.label}</div>
                     {card.href ? (
-                      <a href={card.href} target={card.label === "Adresse" ? "_blank" : undefined} rel="noopener noreferrer"
+                      <Link to={card.href} target={card.label === "Adresse" ? "_blank" : undefined} rel="noopener noreferrer"
                         className="text-[15px] font-semibold text-[#111] no-underline block leading-snug hover:text-red-600 transition-colors whitespace-pre-line">
                         {card.value}
-                      </a>
+                      </Link>
                     ) : (
                       <span className="text-[15px] font-semibold text-[#111] block leading-snug whitespace-pre-line">{card.value}</span>
                     )}
@@ -806,7 +806,7 @@ export default function BAPContactPage() {
                   <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
                 </svg>
               </div>
-              <a href="tel:+33664412376" className="text-sm font-bold text-white/80 no-underline hover:text-white transition-colors">+33 6 64 41 23 76</a>
+              <Link to="tel:+33664412376" className="text-sm font-bold text-white/80 no-underline hover:text-white transition-colors">+33 6 64 41 23 76</Link>
             </div>
             <motion.a
               href="https://maps.app.goo.gl/bjqKVS9KWkoAhp649" target="_blank" rel="noopener noreferrer"
@@ -832,14 +832,14 @@ export default function BAPContactPage() {
           <div className="text-[13px] text-white/30 text-center">
             <p>© 2025 BAP Paris — Tous droits réservés</p>
             <p className="mt-1">
-              <a href="/mention-legales" className="text-white/30 no-underline hover:text-white/70 transition-colors">Mentions légales</a>
+              <Link to="/mention-legales" className="text-white/30 no-underline hover:text-white/70 transition-colors">Mentions légales</Link>
               {" · "}
-              <a href="/cookies" className="text-white/30 no-underline hover:text-white/70 transition-colors">Cookies</a>
+              <Link to="/cookies" className="text-white/30 no-underline hover:text-white/70 transition-colors">Cookies</Link>
             </p>
           </div>
           <div className="flex items-center gap-4">
             {SocialLinks.map((s) => (
-              <a key={s.label} href="#" aria-label={s.label} className="footer-social text-white/35 transition-colors duration-200">{s.icon}</a>
+              <Link key={s.label} to="#" aria-label={s.label} className="footer-social text-white/35 transition-colors duration-200">{s.icon}</Link>
             ))}
           </div>
         </div>
